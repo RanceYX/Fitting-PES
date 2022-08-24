@@ -41,12 +41,18 @@ def const_new_func(data_name, l_max, R_max, dtheta):
     return V
 
 
-def driver_fit(V, l_max):
+def driver_fit(V, l_max, R_fit, R_min, R_max):
     l = 0
     C6_array = []
+    R6 = []
+    for r in R_fit:
+        r = r/0.53
+        r6 = math.pow(r,-6)
+        R6.append(r6)
+
     while l < l_max:
-        c6 = 0.0
-        Fit_VdW.get_C6(V[l], c6)
+        V_pri = V[l][R_min:R_max]
+        c6=Fit_VdW.get_C6(V_pri, R6)
         l = l+1
         C6_array.append(c6)
     return C6_array
@@ -54,9 +60,14 @@ def driver_fit(V, l_max):
 
 dtheta = 9/180 * math.pi
 V_fit = const_new_func('alcl-he_all.csv', 8, 82, dtheta)
-IO.Interface_csv.write_data_bare('V_l.csv', V_fit)
+#IO.Interface_csv.write_data_bare('V_l.csv', V_fit)
 
-#C6 = driver_fit(V_fit, 8)
-#print(C6)
+R_fit = [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,30]
+
+R_min = 60
+R_max = 80
+l_max = 8
+C6 = driver_fit(V_fit, l_max, R_fit, R_min, R_max)
+print(C6)
 
 
