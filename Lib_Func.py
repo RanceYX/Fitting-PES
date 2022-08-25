@@ -18,7 +18,7 @@ def get_Lege_poly(l,Ang):
             p0 = 1
             p1 = t
             i = 2
-            tem =0.0
+            tem = 0.0
 
             while i <= l:
                 tem = ((2*i+1)*t*p1-i*p0)/(i+1)
