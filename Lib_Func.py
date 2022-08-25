@@ -17,10 +17,10 @@ def get_Lege_poly(l,Ang):
             t = math.cos(x)
             p0 = 1
             p1 = t
-            i = 2
+            i = 1
             tem = 0.0
 
-            while i <= l:
+            while i < l:
                 tem = ((2*i+1)*t*p1-i*p0)/(i+1)
                 p0 = p1
                 p1 = tem

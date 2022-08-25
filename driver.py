@@ -95,15 +95,16 @@ dtheta = 9/180 * math.pi
 PES = []
 Ang_ori = []
 data_name = 'alcl-he_all.csv'
+l_max = 11
 IO.Interface_csv.read_data_deflt(data_name, Ang_ori, PES)
-V_fit = const_new_func(8, 82, Ang_ori, PES, dtheta)
-#IO.Interface_csv.write_data_bare('V_l.csv', V_fit)
+V_fit = const_new_func(l_max, 82, Ang_ori, PES, dtheta)
+IO.Interface_csv.write_data_bare('V_l.csv', V_fit)
 
 R_fit = [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,30]
 
 Index_R_min = 60
 Index_R_max = 80
-l_max = 8
+
 C6 = driver_fit(V_fit, l_max, R_fit, Index_R_min, Index_R_max)
 print(C6)
 

@@ -13,9 +13,15 @@ def get_func12(func1, func2):
 
 
 def get_integl(func, Ang, dtheta):
-    i = 0
+    i = 1
     S = 0.0
-    while i < len(Ang):
-        S = S + func[i]*math.sin(Ang[i])*dtheta
+    h = (Ang[-1] - Ang[0]) / len(Ang)
+    while i < len(Ang)/2:
+        y1 = func[2*i-2]*math.sin(Ang[2*i-2])
+        y2 = func[2*i-1]*math.sin(Ang[2*i-1])
+        y3 = func[2*i]*math.sin(Ang[2*i])
+        s = h*(y1+4*y2+y3)/3
+        S = S + s
         i = i+1
+
     return S
