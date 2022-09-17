@@ -7,11 +7,8 @@ import math
 
 def driver_intgl(func1, Ang, dtheta, l):
     func2 = Lib_Func.get_Lege_poly(l, Ang)
-    print("Get function2 polynomials")
     func = integral.get_func12(func1, func2)
-    print("Get func1*func2")
     result = integral.get_integl(func, Ang, dtheta)
-    print("Finishing the integral")
     return result
 
 
@@ -23,8 +20,7 @@ def transfer_angle(Ang_ori):
     return Ang
 
 
-def const_new_func(l_max, R_max, Ang_ori, PES, dtheta):
-    print("Get numerical energy point from input file")
+def get_V_RL(l_max, R_max, Ang_ori, PES, dtheta):
     l = 0
     V = []
 
@@ -36,7 +32,6 @@ def const_new_func(l_max, R_max, Ang_ori, PES, dtheta):
             V_l_r = driver_intgl(PES[j], Ang, dtheta, l) * (2*l+1)/2.0
             V_l.append(V_l_r)
             j = j+1
-        print("Get V_l")
         V.append(V_l)
         l = l+1
     return V
@@ -87,35 +82,38 @@ def ReConsV(C6,Ang,R_grid,R_min,R_max):
             j = j+1
         V.append(V_theta)
         i = i + R_grid
-
     return V
 
 
+###############################Input################################
 dtheta = 9/180 * math.pi
 PES = []
 Ang_ori = []
 data_name = 'alcl-he_all.csv'
 l_max = 11
-IO.Interface_csv.read_data_deflt(data_name, Ang_ori, PES)
-V_fit = const_new_func(l_max, 82, Ang_ori, PES, dtheta)
-IO.Interface_csv.write_data_bare('V_l.csv', V_fit)
-
-R_fit = [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,30]
-
 Index_R_min = 60
 Index_R_max = 80
-
-C6 = driver_fit(V_fit, l_max, R_fit, Index_R_min, Index_R_max)
-print(C6)
-
+R_fit = [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,30]
 R_grid = 1
 R_min = 6
 R_max = 120
 Ang = transfer_angle(Ang_ori)
-V_new = ReConsV(C6, Ang, R_grid, R_min, R_max)
-IO.Interface_csv.write_data_bare('V_fitting.csv', V_new)
-# print(V_new[0])
+###############################Input################################
 
+
+IO.Interface_csv.read_data_deflt(data_name, Ang_ori, PES)
+print("Get numerical energy point from input file")
+V_LR = get_V_RL(l_max, 82, Ang_ori, PES, dtheta)
+print("Expand PES with Legendre polynomial and get each radial V(R)_L")
+IO.Interface_csv.write_data_bare('V_l.csv', V_LR)
+print("Write V_LR in the V_l.csv file")
+C6 = driver_fit(V_LR, l_max, R_fit, Index_R_min, Index_R_max)
+print("Fitting each V_L and get the C6 coeffcient")
+print("C6 are:", C6)
+V_new = ReConsV(C6, Ang, R_grid, R_min, R_max)
+print("With using C6 coeffcient to extrapolate PES at long distance")
+IO.Interface_csv.write_data_bare('V_fitting.csv', V_new)
+print("Wirte the new PES in V_fiiting.csv file")
 
 
 
